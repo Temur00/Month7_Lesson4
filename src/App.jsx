@@ -1,9 +1,11 @@
 import React from "react";
+import Dashboard from "./layout/Dashboard";
+import "./styles/style.scss";
 
 const App = () => {
   return (
     <div>
-      <h1>Hello MUI</h1>
+      <Dashboard />
     </div>
   );
 };
