@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from "react";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import IconButton from "@mui/material/IconButton";
 import {
   Paper,
   Table,
@@ -10,7 +7,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Button,
 } from "@mui/material";
 import Actions from "../../components/Actions";
 
@@ -24,6 +20,32 @@ const Teachers = () => {
       .catch((error) => console.error("Error fetching teachers:", error));
   }, []);
 
+  const handleDelete = async (teacherId) => {
+    if (window.confirm("Are you sure you want to delete this teacher? ❌")) {
+      try {
+        const response = await fetch(
+          `https://65bb677f52189914b5bc02b7.mockapi.io/teachers/${teacherId}`,
+          {
+            method: "DELETE",
+          }
+        );
+        if (response.ok) {
+          // Fetch the updated list of teachers after deletion
+          const updatedTeachersResponse = await fetch(
+            "https://65bb677f52189914b5bc02b7.mockapi.io/teachers"
+          );
+          const updatedTeachersData = await updatedTeachersResponse.json();
+          setTeachers(updatedTeachersData);
+          console.log(`Teacher with ID ${teacherId} deleted successfully.`);
+        } else {
+          console.error(`Failed to delete teacher with ID ${teacherId}.`);
+        }
+      } catch (error) {
+        console.error("Error deleting teacher:", error);
+      }
+    }
+  };
+
   return (
     <div>
       <h2>Teachers</h2>
@@ -32,6 +54,7 @@ const Teachers = () => {
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
+              <TableCell>Image</TableCell>
               <TableCell>First Name</TableCell>
               <TableCell>Last Name</TableCell>
               <TableCell>Age</TableCell>
@@ -43,11 +66,14 @@ const Teachers = () => {
             {teachers.map((teacher) => (
               <TableRow key={teacher.id}>
                 <TableCell>{teacher.id}</TableCell>
+                <TableCell>{teacher.image}</TableCell>
                 <TableCell>{teacher.firstName}</TableCell>
                 <TableCell>{teacher.lastName}</TableCell>
                 <TableCell>{teacher.age}</TableCell>
                 <TableCell>{teacher.level}</TableCell>
-                <Actions align="center" />
+                <TableCell>
+                  <Actions teacher={teacher} handleDelete={handleDelete} />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

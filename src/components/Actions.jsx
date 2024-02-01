@@ -4,21 +4,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Stack } from "@mui/material";
 
-// EDIT
+const Actions = ({ teacher, handleDelete }) => {
+  const onDelete = () => {
+    handleDelete(teacher.id);
+  };
 
-const handleEdit = (teacherId) => {
-  // Handle edit action here
-  console.log("Edit teacher with ID:", teacherId);
-};
-
-// Delete
-
-const handleDelete = (teacherId) => {
-  // Handle delete action here
-  console.log("Delete teacher with ID:", teacherId);
-};
-
-const Actions = () => {
   return (
     <Stack direction="row" spacing={1}>
       <div
@@ -26,10 +16,10 @@ const Actions = () => {
           width: "38",
           height: "38",
           background: "#efefef",
-          "border-radius": "12",
+          borderRadius: "12",
         }}
       >
-        <IconButton color="success" onClick={() => handleEdit(teacher.id)}>
+        <IconButton color="success">
           <EditIcon />
         </IconButton>
       </div>
@@ -38,10 +28,10 @@ const Actions = () => {
           width: "40",
           height: "40",
           background: "#efefef",
-          "border-radius": "12",
+          borderRadius: "12",
         }}
       >
-        <IconButton color="error" onClick={() => handleDelete(teacher.id)}>
+        <IconButton color="error" onClick={onDelete}>
           <DeleteIcon />
         </IconButton>
       </div>
