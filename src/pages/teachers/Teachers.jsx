@@ -14,34 +14,41 @@ const Teachers = () => {
   const [teachers, setTeachers] = useState([]);
 
   useEffect(() => {
-    fetch("https://65bb677f52189914b5bc02b7.mockapi.io/teachers")
-      .then((response) => response.json())
-      .then((data) => setTeachers(data))
-      .catch((error) => console.error("Error fetching teachers:", error));
+    fetchTeachers();
   }, []);
 
-  const handleDelete = async (teacherId) => {
-    if (window.confirm("Are you sure you want to delete this teacher? ❌")) {
+  const fetchTeachers = async () => {
+    try {
+      const response = await fetch(
+        "https://65bb677f52189914b5bc02b7.mockapi.io/teachers"
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch teachers");
+      }
+      const data = await response.json();
+      setTeachers(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDelete = async (type, id) => {
+    if (window.confirm(`Are you sure you want to delete this ${type}? ❌`)) {
       try {
         const response = await fetch(
-          `https://65bb677f52189914b5bc02b7.mockapi.io/teachers/${teacherId}`,
+          `https://65bb677f52189914b5bc02b7.mockapi.io/${type}/${id}`,
           {
             method: "DELETE",
           }
         );
-        if (response.ok) {
-          // Fetch the updated list of teachers after deletion
-          const updatedTeachersResponse = await fetch(
-            "https://65bb677f52189914b5bc02b7.mockapi.io/teachers"
-          );
-          const updatedTeachersData = await updatedTeachersResponse.json();
-          setTeachers(updatedTeachersData);
-          console.log(`Teacher with ID ${teacherId} deleted successfully.`);
-        } else {
-          console.error(`Failed to delete teacher with ID ${teacherId}.`);
+        if (!response.ok) {
+          throw new Error(`Failed to delete ${type} with ID ${id}`);
         }
+        // Remove the deleted teacher from the state
+        setTeachers(teachers.filter((teacher) => teacher.id !== id));
+        console.log(`${type} with ID ${id} deleted successfully.`);
       } catch (error) {
-        console.error("Error deleting teacher:", error);
+        console.error(error);
       }
     }
   };
@@ -54,7 +61,6 @@ const Teachers = () => {
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
-              <TableCell>Image</TableCell>
               <TableCell>First Name</TableCell>
               <TableCell>Last Name</TableCell>
               <TableCell>Age</TableCell>
@@ -66,13 +72,16 @@ const Teachers = () => {
             {teachers.map((teacher) => (
               <TableRow key={teacher.id}>
                 <TableCell>{teacher.id}</TableCell>
-                <TableCell>{teacher.image}</TableCell>
                 <TableCell>{teacher.firstName}</TableCell>
                 <TableCell>{teacher.lastName}</TableCell>
                 <TableCell>{teacher.age}</TableCell>
                 <TableCell>{teacher.level}</TableCell>
                 <TableCell>
-                  <Actions teacher={teacher} handleDelete={handleDelete} />
+                  <Actions
+                    type="teacher"
+                    data={teacher}
+                    handleDelete={handleDelete}
+                  />
                 </TableCell>
               </TableRow>
             ))}

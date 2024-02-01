@@ -4,9 +4,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Stack } from "@mui/material";
 
-const Actions = ({ teacher, handleDelete }) => {
+const Actions = ({ type, data, handleEdit, handleDelete }) => {
   const onDelete = () => {
-    handleDelete(teacher.id);
+    if (type === "teacher") {
+      handleDelete("teachers", data.id);
+    } else if (type === "student") {
+      handleDelete("students", data.id);
+    }
   };
 
   return (
@@ -19,7 +23,7 @@ const Actions = ({ teacher, handleDelete }) => {
           borderRadius: "12",
         }}
       >
-        <IconButton color="success">
+        <IconButton color="success" onClick={() => handleEdit(data.id)}>
           <EditIcon />
         </IconButton>
       </div>
