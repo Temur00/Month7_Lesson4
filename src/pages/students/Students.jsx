@@ -61,6 +61,7 @@ const Students = () => {
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
+              <TableCell>Image</TableCell>
               <TableCell>First Name</TableCell>
               <TableCell>Last Name</TableCell>
               <TableCell>Age</TableCell>
@@ -72,6 +73,15 @@ const Students = () => {
             {students.map((student) => (
               <TableRow key={student.id}>
                 <TableCell>{student.id}</TableCell>
+                <img
+                  src={student.avatar}
+                  alt={`Avatar of ${student.firstName} ${student.lastName}`}
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    borderRadius: "50px",
+                  }}
+                />
                 <TableCell>{student.firstName}</TableCell>
                 <TableCell>{student.lastName}</TableCell>
                 <TableCell>{student.age}</TableCell>
